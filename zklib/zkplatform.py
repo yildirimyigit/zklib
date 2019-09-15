@@ -17,14 +17,14 @@ def zkplatform(self):
     buf_a = self.createHeader(command, chksum, session_id,reply_id,command_string)
     
     buf = buf_b+buf_a+END_TAG
-    print buf.encode('hex')
+    print(buf.encode('hex'))
     self.zkclient.send(buf)
     try:
         #testres = '5050827D1D000000D00731A7631909007E506C6174666F726D3D4A5A343732355F54465400'.decode('hex')
         self.data_recv = self.zkclient.recv(1024)
         return self.data_recv[16:]
     except Exception as e:
-        print e
+        print(e)
         self.disconnect()
         return False
     
@@ -52,7 +52,7 @@ def zkplatformVersion(self):
         self.data_recv = self.zkclient.recv(1024)
         return self.data_recv[16:]
     except Exception as e:
-        print e
+        print(e)
         self.disconnect()
         return False
     
@@ -80,7 +80,7 @@ def zkfirmwareVersion(self):
         self.data_recv =  self.zkclient.recv(1024)
         return self.data_recv[16:]
     except Exception as e:
-        print e
+        print(e)
         self.disconnect()
         return False
 
@@ -107,6 +107,6 @@ def zkisonlyrf(self):
         self.data_recv = self.zkclient.recv(1024)
         return self.data_recv[16:]
     except Exception as e:
-        print e
+        print(e)
         self.disconnect()
         return False

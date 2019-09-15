@@ -15,14 +15,14 @@ def zkssr(self):
     
     buf_a = self.createHeader(command, chksum, session_id,reply_id,command_string)
     buf = buf_b + buf_a
-    print buf.encode('hex')
+    print(buf.encode('hex'))
     #self.zkclient.send(buf)
     try:
         testres ='5050827D0F000000D007B10763190D007E5353523D3100'.decode('hex')
         self.data_recv = testres   # self.zkclient.recv(1024)
         return self.data_recv[16:]
     except Exception as e:
-        print e
+        print(e)
         self.disconnect()
         return False
     

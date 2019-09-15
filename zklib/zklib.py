@@ -64,7 +64,7 @@ class ZKLib:
         buf = unpack('8B'+'%sB' % len(command_string), buf+command_string)
           
         chksum = unpack('H', self.createChkSum(buf))[0]
-        print chksum
+        print(chksum)
         #print unpack('H', self.createChkSum(buf))
         reply_id += 1
         if reply_id >= USHRT_MAX:
@@ -94,7 +94,7 @@ class ZKLib:
 
         if command == CMD_ACK_OK:
             self.isAlive = True
-            print "CMD_ACK_OK"
+            print("CMD_ACK_OK")
             return True
         else:
             return False
@@ -189,7 +189,7 @@ class ZKLib:
                 return att_log
             elif res[3] != 0:
                 self.data_recv = data
-                print data[16:]
+                print(data[16:])
                 return True
         except Exception as e:
             self.disconnect()
@@ -219,6 +219,6 @@ class ZKLib:
                     return (uid, lock_time.strftime('%Y-%m-%d %H:%M:%S'))
             return None
         except Exception as e:
-            print e
+            print(e)
             self.disconnect()
             return False

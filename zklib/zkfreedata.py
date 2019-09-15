@@ -23,7 +23,7 @@ def zkfreedata(self):
 		self.data_recv = self.zkclient.recv(1024)
 		return self.data_recv[16:]
 	except Exception as e:
-		print e
+		print(e)
 		self.disconnect()
 		return False
 	
@@ -46,6 +46,6 @@ def zkfinalaws(self):
 		self.data_recv =  self.zkclient.recv(1024)
 		return self.data_recv[16:]
 	except Exception as e:
-		print e
+		print(e)
 		self.disconnect()
 		return False

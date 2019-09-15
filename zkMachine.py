@@ -1,37 +1,28 @@
+from reportlab.lib.validators import isInstanceOf
 
 from zklib import zklib
-
 import threading
 
 
-import types
-
-
-
 # print current lock user 
-def addRecord(record):
-    print record
+def add_record(record):
+    print(record)
 
 
-
-zk = zklib.ZKLib("172.69.8.4", 4370)
+zk = zklib.ZKLib("192.168.1.103", 4370)  # IP of my device was 192.168.1.103
 res = zk.connect()
 
 
-temp = 0 # flag to disconnect
+temp = 0  # flag to disconnect
 if res:
     while temp < 4:
-        data = zk.zkrecvCurrentAtt()   #(uid, time)
+        data = zk.zkrecvCurrentAtt()   # (uid, time)
         if data:
-            if type(data) == types.BooleanType:
+            if isinstance(data, bool):
                 continue
-            t = threading.Thread(target=addRecord,args=(data,))
+            t = threading.Thread(target=add_record, args=(data,))
             t.start()
             temp += 1
-
-
-
-
 
 #zk.disconnect()
 

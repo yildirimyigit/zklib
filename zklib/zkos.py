@@ -28,7 +28,7 @@ def zkos(self):
 
         return self.data_recv[16:]
     except Exception as e:
-        print e
+        print(e)
         self.disconnect()
         return False
         
