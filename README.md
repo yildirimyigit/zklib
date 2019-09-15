@@ -1,4 +1,7 @@
 # zklib
+Forked from [Codefans-fan/zklib](https://github.com/Codefans-fan/zklib)
+
+
 Connection to the network using the TCP protocol and port 4370.
 python script
 
@@ -32,12 +35,4 @@ This version only can connect to the machine. To parse the data need some more w
 
 2018-06-26: This project is no longer maintained. 
 
-
-
-#BTW
-If you have any question, please create issue. Thanks.
-
-
-#Donate
-![image](https://github.com/Codefans-fan/zklib/blob/master/donate.png)
 
