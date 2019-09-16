@@ -1,6 +1,4 @@
-from reportlab.lib.validators import isInstanceOf
-
-from zklib import zklib
+import zklib
 import threading
 
 
@@ -24,6 +22,4 @@ if res:
             t.start()
             temp += 1
 
-#zk.disconnect()
-
-
+# zk.disconnect()

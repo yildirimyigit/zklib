@@ -1,6 +1,6 @@
 from struct import  unpack
 
-from zkconst import CMD_CONNECT, MACHINE_PREPARE_DATA_1,MACHINE_PREPARE_DATA_2,USHRT_MAX,CMD_EXIT
+from zkconst import CMD_CONNECT, MACHINE_PREPARE_DATA_1, MACHINE_PREPARE_DATA_2, USHRT_MAX, CMD_EXIT
 
 
 def zkconnect(self):
@@ -12,16 +12,14 @@ def zkconnect(self):
     reply_id = -1 + USHRT_MAX
     client_length = 8
     
-    buf_b = self.createtop(MACHINE_PREPARE_DATA_1,MACHINE_PREPARE_DATA_2,client_length,0)
+    buf_b = self.createtop(MACHINE_PREPARE_DATA_1, MACHINE_PREPARE_DATA_2, client_length, 0)
     
-    buf_a = self.createHeader(command, chksum, session_id,
-        reply_id,command_string)
-    
-    
+    buf_a = self.createHeader(command, chksum, session_id, reply_id, command_string)
+
     buf = buf_b+buf_a
     self.zkclient.send(buf)
     try:
-        #testres = '5050827D08000000D007CCDE63190000'.decode('hex')
+        # testres = '5050827D08000000D007CCDE63190000'.decode('hex')
         
         self.data_recv = self.zkclient.recv(1024)
         
@@ -31,7 +29,7 @@ def zkconnect(self):
         self.disconnect()
         return False
 
-    
+
 def zkdisconnect(self):
     """Disconnect from the clock"""
     command = CMD_EXIT
@@ -42,8 +40,7 @@ def zkdisconnect(self):
     
     client_length = 8
     buf_b = self.createtop(MACHINE_PREPARE_DATA_1,MACHINE_PREPARE_DATA_2,client_length,0)
-    
-    
+
     buf_a = self.createHeader(command, chksum, session_id,reply_id,command_string)
     
     buf = buf_b+buf_a
@@ -55,4 +52,3 @@ def zkdisconnect(self):
         print(e)
         self.zkclient.close()
         return False
-    

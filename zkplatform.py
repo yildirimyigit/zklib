@@ -1,6 +1,7 @@
 from struct import pack, unpack
 
-from zkconst import CMD_VERSION, CMD_DEVICE,MACHINE_PREPARE_DATA_1,MACHINE_PREPARE_DATA_2,END_TAG
+from zkconst import CMD_VERSION, CMD_DEVICE, MACHINE_PREPARE_DATA_1, MACHINE_PREPARE_DATA_2, END_TAG
+
 
 def zkplatform(self):
     """Start a connection with the time clock"""
@@ -12,22 +13,22 @@ def zkplatform(self):
     
     client_length = 18
     
-    buf_b = self.createtop(MACHINE_PREPARE_DATA_1,MACHINE_PREPARE_DATA_2,client_length,0)
+    buf_b = self.createtop(MACHINE_PREPARE_DATA_1, MACHINE_PREPARE_DATA_2, client_length, 0)
     
-    buf_a = self.createHeader(command, chksum, session_id,reply_id,command_string)
+    buf_a = self.createHeader(command, chksum, session_id, reply_id, command_string)
     
-    buf = buf_b+buf_a+END_TAG
-    print(buf.encode('hex'))
+    buf = buf_b + buf_a + END_TAG
+    print(buf.hex())
     self.zkclient.send(buf)
     try:
-        #testres = '5050827D1D000000D00731A7631909007E506C6174666F726D3D4A5A343732355F54465400'.decode('hex')
+        # testres = '5050827D1D000000D00731A7631909007E506C6174666F726D3D4A5A343732355F54465400'.decode('hex')
         self.data_recv = self.zkclient.recv(1024)
         return self.data_recv[16:]
     except Exception as e:
         print(e)
         self.disconnect()
         return False
-    
+
 
 def zkplatformVersion(self):
     """Start a connection with the time clock"""
@@ -55,7 +56,8 @@ def zkplatformVersion(self):
         print(e)
         self.disconnect()
         return False
-    
+
+
 def zkfirmwareVersion(self):
     command = CMD_VERSION
     command_string = ''
@@ -83,6 +85,7 @@ def zkfirmwareVersion(self):
         print(e)
         self.disconnect()
         return False
+
 
 def zkisonlyrf(self):
     command = CMD_DEVICE

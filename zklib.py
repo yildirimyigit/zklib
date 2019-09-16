@@ -1,20 +1,22 @@
-from socket import socket, AF_INET,SOCK_STREAM
+from socket import socket, AF_INET, SOCK_STREAM
 
 import time
-from struct import unpack,pack
+from struct import unpack, pack
 
-from zkconnect import zkconnect,zkdisconnect
+from zkconnect import zkconnect, zkdisconnect
 from zkversion import zkversion
 from zkos import zkos
-from zkextendfmt import zkextendfmt,zkuserextfmt
+from zkextendfmt import zkextendfmt, zkuserextfmt
 from zkextendoplog import zkextendoplog
-from zkplatform import  zkfirmwareVersion,zkplatformVersion,zkplatform, zkisonlyrf
+from zkplatform import  zkfirmwareVersion, zkplatformVersion, zkplatform, zkisonlyrf
 from zkworkcode import zkworkcode
 from zkssr import zkssr
 from zkpin import zkpinwidth
 from zkface import zkfaceon
-from zkfreedata import zkfinalaws,zkfreedata
-from zkconst import USHRT_MAX,CMD_ACK_OK,MACHINE_PREPARE_DATA_1,MACHINE_PREPARE_DATA_2,parse_time
+from zkfreedata import zkfinalaws, zkfreedata
+from zkconst import USHRT_MAX, CMD_ACK_OK, MACHINE_PREPARE_DATA_1, MACHINE_PREPARE_DATA_2, parse_time
+
+
 class ZKLib:
     
     def __init__(self, ip, port):
@@ -23,7 +25,6 @@ class ZKLib:
         self.data_recv = ''
         self.userdata = []
         self.attendancedata = []
-        
         
     def createChkSum(self, p):
         """This function calculates the chksum of the packet to be sent to the 
@@ -39,8 +40,7 @@ class ZKLib:
             if chksum > USHRT_MAX:
                 chksum -= USHRT_MAX
             l -= 2
-        
-        
+
         if l:
             chksum = chksum + p[-1]
             
@@ -54,33 +54,32 @@ class ZKLib:
         
         return pack('H', chksum)
 
-
-    def createHeader(self, command, chksum, session_id, reply_id,command_string):
+    def createHeader(self, command, chksum, session_id, reply_id, command_string):
         """This function puts a the parts that make up a packet together and 
         packs them into a byte string"""
-        buf = pack('HHHH', command, chksum,
-            session_id, reply_id)
-          
-        buf = unpack('8B'+'%sB' % len(command_string), buf+command_string)
-          
+
+        b_cmd_str = command_string.encode('ascii') if isinstance(command_string, str) else command_string
+
+        buf = pack(b'HHHH', command, chksum, session_id, reply_id)
+        buf = unpack('8B' + '%sB' % len(command_string), buf + b_cmd_str)
+
         chksum = unpack('H', self.createChkSum(buf))[0]
         print(chksum)
-        #print unpack('H', self.createChkSum(buf))
+        # print unpack('H', self.createChkSum(buf))
         reply_id += 1
         if reply_id >= USHRT_MAX:
             reply_id -= USHRT_MAX
-        buf = pack('HHHH', command, chksum, session_id, reply_id)
-        return buf + command_string
+        buf = pack(b'HHHH', command, chksum, session_id, reply_id)
+        return buf + b_cmd_str
     
-    def createCacheHeader(self, command, chksum, session_id, reply_id,command_string):
-        buf = pack('HHHH', command, chksum,
-            session_id, reply_id)
+    def createCacheHeader(self, command, chksum, session_id, reply_id, command_string):
+        buf = pack('HHHH', command, chksum, session_id, reply_id)
           
         buf = unpack('8B'+'%sB' % len(command_string), buf+command_string)
           
-        chksum = unpack('H', self.createChkSum(buf))[0] +1
-        #print chksum
-        #print unpack('H', self.createChkSum(buf))
+        chksum = unpack('H', self.createChkSum(buf))[0] + 1
+        # print chksum
+        # print unpack('H', self.createChkSum(buf))
         reply_id += 1
         if reply_id >= USHRT_MAX:
             reply_id -= USHRT_MAX
@@ -98,11 +97,9 @@ class ZKLib:
             return True
         else:
             return False
-    
-    
+
     def createtop(self,top1,top2,top3,top4):
         return pack('HHHH', top1, top2, top3, top4)
-        
        
     def connect(self):
         self.zkclient.connect_ex(self.address)
@@ -146,8 +143,8 @@ class ZKLib:
     def userExtFmt(self):
         return zkuserextfmt(self)
     
-    def extendOPLog(self, recommand=None,index=0):
-        return zkextendoplog(self,recommand=recommand,index=index)
+    def extendOPLog(self, recommand=None, index=0):
+        return zkextendoplog(self, recommand=recommand, index=index)
     
     def platform(self):
         return zkplatform(self)
@@ -183,7 +180,7 @@ class ZKLib:
         try:
             data = self.zkclient.recv(1024)
             res = unpack('HHHH',data[8:16])
-            if res[0] == 500 and res[2] == 2: #simple check 
+            if res[0] == 500 and res[2] == 2: # simple check
                 att_log = self.zksendCache(0)
                 self.zksendCache(1)
                 return att_log
@@ -194,8 +191,7 @@ class ZKLib:
         except Exception as e:
             self.disconnect()
     
-    
-    def zksendCache(self,index):
+    def zksendCache(self, index):
         command = 2000
         command_string = ''
         client_length = 8
@@ -209,14 +205,14 @@ class ZKLib:
         buf = buf_b+buf_a
         self.zkclient.send(buf)
         try:
-            #testres = '5050827D15000000D0075ECB631903007E457874656E64466D743D3000'.decode('hex')
+            # testres = '5050827D15000000D0075ECB631903007E457874656E64466D743D3000'.decode('hex')
             if index == 0:
                 data = self.zkclient.recv(1024)
                 # get att log time
                 if unpack('HHHH', data[:8])[2] > 40:
                     uid = data[16:18].split('\x00', 1)[0]
                     lock_time = parse_time(data[42:48].encode('hex'))
-                    return (uid, lock_time.strftime('%Y-%m-%d %H:%M:%S'))
+                    return uid, lock_time.strftime('%Y-%m-%d %H:%M:%S')
             return None
         except Exception as e:
             print(e)

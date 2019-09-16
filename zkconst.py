@@ -1,4 +1,5 @@
 from datetime import datetime
+import codecs
 
 USHRT_MAX = 65535
 
@@ -7,14 +8,12 @@ MACHINE_PREPARE_DATA_2 = 32130
 CMD_FINAL_AWS = 500
 
 
-
 CMD_CONNECT = 1000
 CMD_EXIT = 1001
 CMD_ATTLOG_RQ = 1003
 
 CMD_ATTLOG_RQ_PRE = 1503
 CMD_ATTLOG_RQ_START = 1504
-
 
 
 CMD_ACK_OK = 2000
@@ -31,7 +30,7 @@ CMD_DEVICE = 11
 CMD_FREE_DATA = 69
 
 
-END_TAG = '00'.decode('hex')
+END_TAG = codecs.decode('00', 'hex')
 
 
 def encode_time(t):
@@ -42,7 +41,6 @@ def encode_time(t):
          (24 * 60 * 60) + (t.hour * 60 + t.minute) * 60 + t.second
 
     return d
-
 
 
 def decode_time(t):
@@ -70,6 +68,7 @@ def decode_time(t):
 
     return d
 
+
 def parse_time(t):
     
     year = int(t[:2],16)+2000
@@ -84,11 +83,12 @@ def parse_time(t):
 
 def reverseHex(hexstr):
     tmp = ''
-    for i in reversed( xrange( len(hexstr)/2 ) ):
+    for i in reversed(range(len(hexstr)/2)):
         tmp += hexstr[i*2:(i*2)+2]
     
     return tmp
 
-if __name__=='__main__':
-    print   decode_time(int(reverseHex("ED 43 99 1E ".replace(' ', '')),16))
-    #print parse_time('10040f110d36').strftime('%Y-%m-%d %H:%M:%S')
+
+if __name__ == '__main__':
+    print(decode_time(int(reverseHex("ED 43 99 1E ".replace(' ', '')), 16)))
+    # print parse_time('10040f110d36').strftime('%Y-%m-%d %H:%M:%S')

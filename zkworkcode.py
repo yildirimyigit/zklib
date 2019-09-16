@@ -1,7 +1,7 @@
-from struct import pack, unpack
-from datetime import datetime, date
+from struct import unpack
 
-from zkconst import CMD_DEVICE,MACHINE_PREPARE_DATA_1,MACHINE_PREPARE_DATA_2,END_TAG
+from zkconst import CMD_DEVICE, MACHINE_PREPARE_DATA_1, MACHINE_PREPARE_DATA_2, END_TAG
+
 
 def zkworkcode(self):
     """Start a connection with the time clock"""
@@ -12,13 +12,13 @@ def zkworkcode(self):
     reply_id = unpack('HHHH', self.data_recv[8:16])[3]
 
     client_length= 17
-    buf_b = self.createtop(MACHINE_PREPARE_DATA_1,MACHINE_PREPARE_DATA_2,client_length,0)
+    buf_b = self.createtop(MACHINE_PREPARE_DATA_1, MACHINE_PREPARE_DATA_2, client_length, 0)
     
-    buf_a = self.createHeader(command, chksum, session_id,reply_id,command_string)
+    buf_a = self.createHeader(command, chksum, session_id, reply_id, command_string)
     buf = buf_b + buf_a + END_TAG
     self.zkclient.send(buf)
     try:
-        #testres ='5050827D13000000D00711FF63190C00576F726B436F64653D3000'.decode('hex')
+        # testres ='5050827D13000000D00711FF63190C00576F726B436F64653D3000'.decode('hex')
         self.data_recv = self.zkclient.recv(1024)
         return self.data_recv[16:]
     except Exception as e:
